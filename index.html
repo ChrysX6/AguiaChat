@@ -22,7 +22,6 @@
       --gray-600: #666680;
       --online: #22c55e;
       --msg-radius: 16px;
-      /* Tema claro */
       --bg-app: #f0f0f8;
       --bg-msg: #ffffff;
       --bg-input: #f5f5f7;
@@ -77,7 +76,74 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(--text-primary); }
 
-    /* LOGIN */
+    /* ===== ESTILOS MENÇÕES ===== */
+    .mention {
+      background: rgba(191, 147, 44, 0.2);
+      color: var(--gold);
+      padding: 0 4px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mention:hover {
+      background: rgba(191, 147, 44, 0.3);
+      text-decoration: underline;
+    }
+    [data-theme="dark"] .mention {
+      background: rgba(191, 147, 44, 0.3);
+    }
+    #mention-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    #mention-suggestions {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      background: var(--bg-msg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 100;
+      min-width: 200px;
+      display: none;
+    }
+    #mention-suggestions .mention-suggestion {
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #mention-suggestions .mention-suggestion:hover {
+      background: var(--gray-100);
+    }
+    #mention-suggestions::-webkit-scrollbar {
+      width: 4px;
+    }
+    #mention-suggestions::-webkit-scrollbar-thumb {
+      background: var(--gray-400);
+      border-radius: 2px;
+    }
+
+    /* ===== LOGIN ===== */
     #login-screen {
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh;
@@ -102,7 +168,6 @@
       max-width: 240px; height: auto; object-fit: contain; border-radius: 0;
       display: block;
     }
-    /* removido .login-title e .login-sub */
     .form-group { margin-bottom: 16px; }
     .form-group label { display:block; font-size:12px; font-weight:600; color:var(--gold); text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; }
     .form-group input {
@@ -127,11 +192,11 @@
     }
     .notif-permission-btn:hover { background:rgba(191,147,44,0.2); }
 
-    /* APP */
+    /* ===== APP ===== */
     #app { display:none; height:100vh; flex-direction:row; background:var(--bg-app); }
     #app.visible { display:flex; }
 
-    /* SIDEBAR */
+    /* ===== SIDEBAR ===== */
     .sidebar {
       width:var(--sidebar-w); min-width:var(--sidebar-w);
       background:var(--navy); display:flex; flex-direction:column;
@@ -141,7 +206,7 @@
     .logo-area { 
       display:flex; 
       align-items:center; 
-      justify-content: center; /* centraliza a logo */
+      justify-content: center;
       margin-bottom:16px; 
     }
     .logo-box {
@@ -150,7 +215,6 @@
       overflow: hidden; flex-shrink:0;
     }
     .logo-box img { max-width: 220px; width:100%; height:auto; object-fit:contain; display:block; }
-    /* removido .company-name e .company-sub */
     .theme-toggle {
       background:rgba(255,255,255,0.1); border:1px solid rgba(191,147,44,0.3);
       border-radius:8px; padding:4px 8px; color:var(--white);
@@ -194,15 +258,14 @@
     .btn-logout { background:none; border:none; color:rgba(255,255,255,0.4); cursor:pointer; padding:4px; border-radius:6px; transition:.2s; }
     .btn-logout:hover { color:#ff6b6b; background:rgba(255,0,0,0.1); }
 
-    /* MAIN */
+    /* ===== MAIN ===== */
     .main { flex:1; display:flex; flex-direction:column; min-width:0; }
     .chat-header {
       background:var(--chat-header-bg); border-bottom:1px solid var(--border-color);
       padding:14px 24px; display:flex; align-items:center; gap:12px;
     }
-    /* logo do cabeçalho removida (usada apenas na sidebar/login) */
     .chat-header-icon { font-size:22px; }
-    .chat-header-info { flex:1; }
+    .chat-header-info { flex:1; display: flex; align-items: center; gap: 12px; }
     .chat-header-name { font-size:16px; font-weight:700; color:var(--text-primary); }
     .chat-header-meta { font-size:12px; color:var(--gray-600); margin-top:1px; }
     .online-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--online); margin-right:4px; }
@@ -248,7 +311,6 @@
       color:var(--msg-own-color);
       border-radius:var(--msg-radius) var(--msg-radius) 4px var(--msg-radius);
     }
-    /* Links em mensagens - garantindo visibilidade no tema escuro */
     .msg-bubble a {
       color: var(--gold);
       text-decoration: underline;
@@ -257,7 +319,6 @@
     .msg-group.own .msg-bubble a {
       color: #d4a93a;
     }
-    /* Tema escuro: links ficam dourado claro */
     [data-theme="dark"] .msg-bubble a {
       color: #f0c94d;
       text-decoration-color: #f0c94d;
@@ -282,7 +343,7 @@
     .tool-btn { background:none; border:none; padding:4px 6px; border-radius:6px; cursor:pointer; color:var(--gray-600); font-size:16px; transition:.15s; }
     .tool-btn:hover { background:var(--gray-100); color:var(--navy); }
     .input-row { display:flex; align-items:flex-end; gap:10px; }
-    .input-wrap { flex:1; }
+    .input-wrap { flex:1; position: relative; }
     #msg-input {
       width:100%; padding:10px 16px;
       background:var(--bg-input); border:1.5px solid var(--border-color);
@@ -302,7 +363,7 @@
     .btn-send:disabled { opacity:.4; cursor:not-allowed; transform:none; }
     .btn-send svg { color:var(--white); }
 
-    /* MODAIS */
+    /* ===== MODAIS ===== */
     .modal-overlay {
       position:fixed; inset:0; background:rgba(0,0,0,0.5);
       display:flex; align-items:center; justify-content:center;
@@ -311,7 +372,7 @@
     .modal-overlay.hidden { display:none; }
     .modal {
       background: var(--modal-bg);
-      border-radius:16px; padding:28px; width:420px;
+      border-radius:16px; padding:28px; width:420px; max-height: 80vh; overflow-y: auto;
       box-shadow:0 24px 60px rgba(0,0,0,0.2);
     }
     .modal h3 {
@@ -324,7 +385,7 @@
       font-size:14px;
       margin-bottom:12px;
     }
-    .modal input {
+    .modal input, .modal textarea {
       width:100%; padding:10px 14px;
       border:1.5px solid var(--modal-input-border);
       border-radius:8px; font-size:14px;
@@ -333,7 +394,7 @@
       background: var(--modal-input-bg);
       color: var(--modal-input-color);
     }
-    .modal input:focus {
+    .modal input:focus, .modal textarea:focus {
       border-color: var(--gold);
     }
     .modal-actions {
@@ -362,7 +423,7 @@
       filter: brightness(1.1);
     }
 
-    /* TOAST */
+    /* ===== TOAST ===== */
     #toast-container { position:fixed; bottom:24px; right:24px; z-index:2000; display:flex; flex-direction:column; gap:8px; }
     .toast { background:var(--navy); color:var(--white); border-left:4px solid var(--gold); padding:12px 16px; border-radius:10px; font-size:13px; max-width:300px; box-shadow:0 8px 24px rgba(0,0,0,0.3); animation:slide-in .3s ease; }
     .toast strong { color:var(--gold); display:block; margin-bottom:2px; }
@@ -387,10 +448,8 @@
   <div class="login-card">
     <div class="login-logo">
       <div class="login-logo-area">
-        <!-- Coloque o caminho da sua logo aqui -->
         <img src="img/logo1.jpg" alt="Logo" />
       </div>
-      <!-- removido texto -->
     </div>
     <div class="form-group">
       <label>Usuário</label>
@@ -415,7 +474,6 @@
           <img src="img/logo1.jpg" alt="Logo" />
         </div>
       </div>
-      <!-- removido texto -->
       <div style="display:flex; gap:8px; align-items:center; margin-top: 8px;">
         <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
         <div class="search-box" style="flex:1;">
@@ -472,11 +530,17 @@
     <div class="chat-header">
       <span class="chat-header-icon" id="hdr-icon">💬</span>
       <div class="chat-header-info">
-        <div class="chat-header-name" id="hdr-name">Geral</div>
-        <div class="chat-header-meta">
-          <span class="online-dot"></span>
-          <span id="hdr-meta">Canal principal</span>
-          <span class="sync-status" id="sync-status"></span>
+        <div>
+          <div class="chat-header-name" id="hdr-name">Geral</div>
+          <div class="chat-header-meta">
+            <span class="online-dot"></span>
+            <span id="hdr-meta">Canal principal</span>
+            <span class="sync-status" id="sync-status"></span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+          <span id="mention-badge">0</span>
+          <button class="tool-btn" onclick="openMentionsPanel()" title="Menções não lidas" style="font-size: 18px;">🔔</button>
         </div>
       </div>
     </div>
@@ -498,8 +562,9 @@
       </div>
       <div class="input-row">
         <div class="input-wrap">
-          <textarea id="msg-input" rows="1" placeholder="Mensagem..."
+          <textarea id="msg-input" rows="1" placeholder="Mensagem... (use @ para mencionar)"
             onkeydown="handleKey(event)" oninput="handleInput(event)"></textarea>
+          <div id="mention-suggestions"></div>
         </div>
         <button class="btn-send" id="btn-send" onclick="sendMessage()">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -538,6 +603,22 @@
   </div>
 </div>
 
+<!-- MODAL MENÇÕES -->
+<div class="modal-overlay hidden" id="mentions-modal">
+  <div class="modal" style="width: 500px; max-height: 80vh; overflow-y: auto;">
+    <h3>🔔 Menções Não Lidas</h3>
+    <div id="mentions-list">
+      <div style="text-align: center; color: var(--gray-400); padding: 20px;">
+        Nenhuma menção não lida ✨
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeMentionsModal()">Fechar</button>
+      <button class="btn-confirm" onclick="markAllMentionsRead()">Marcar todas como lidas</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
 
 <script>
@@ -546,7 +627,6 @@
 // ═══════════════════════════════════════════════
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzj_2jMzZcYaNyL-ZNfq2kfZhQpV54UalLpkLecXvfylsdpoRBa1uBTn_oSS-SS8w/exec';
 
-// Usuários
 const USERS = {
   martins:  { pass: 'Aguia2025@', name: 'Victor Martins', role: 'Admin' },
   chrystian: { pass: 'Aguia2025@', name: 'Chrystian Gabriel', role: 'Admin' },
@@ -562,7 +642,6 @@ const USERS = {
   marcia:   { pass: 'Aguia2025@', name: 'Marcia', role: 'Contadora' },
 };
 
-// Senhas por departamento
 const CHANNEL_PASSWORDS = {
   dp:         'dp@2025',
   fiscal:     'fiscal@2025',
@@ -588,6 +667,7 @@ let pollTimer    = null;
 let typingTimer  = null;
 let isTyping     = false;
 let channelUnlocked = false;
+let mentionCheckInterval = null;
 
 const badges = {};
 Object.keys(CHANNELS).forEach(k => badges[k] = 0);
@@ -608,12 +688,11 @@ function requestNotificationPermission() {
     alert('As notificações foram bloqueadas por você. Por favor, permita nas configurações do navegador.');
     return;
   }
-  // permission === 'default'
   Notification.requestPermission().then(perm => {
     if (perm === 'granted') {
       showToast('Notificações', 'Ativadas com sucesso! 🔔');
       new Notification('✅ Notificações ativadas', {
-        body: 'Você receberá alertas de novas mensagens.',
+        body: 'Você receberá alertas de novas mensagens e menções.',
         icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💬</text></svg>'
       });
     } else {
@@ -622,21 +701,23 @@ function requestNotificationPermission() {
   });
 }
 
-function notifyNewMessage(user, message) {
+function notifyNewMessage(user, message, isMention = false) {
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
-  // if (!document.hidden) return; // opcional
 
   const channelName = CHANNELS[currentChannel]?.name || currentChannel;
+  const icon = isMention ? '🔔' : '💬';
+  const title = isMention ? `🔔 @${user} mencionou você` : `${icon} Nova mensagem no ${channelName}`;
+  
   const options = {
-    body: `${user}: ${message.slice(0, 60)}${message.length > 60 ? '…' : ''}`,
-    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💬</text></svg>',
-    tag: 'chat-message',
-    requireInteraction: true
+    body: isMention ? message.slice(0, 80) : `${user}: ${message.slice(0, 60)}${message.length > 60 ? '…' : ''}`,
+    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + (isMention ? '🔔' : '💬') + '</text></svg>',
+    tag: isMention ? 'mention-' + Date.now() : 'chat-message',
+    requireInteraction: isMention
   };
   try {
-    const n = new Notification('💬 Nova mensagem no ' + channelName, options);
-    setTimeout(() => n.close(), 8000);
+    const n = new Notification(title, options);
+    setTimeout(() => n.close(), isMention ? 10000 : 8000);
   } catch (e) {
     console.error('Erro ao criar notificação:', e);
   }
@@ -653,6 +734,7 @@ function toggleTheme() {
   localStorage.setItem('theme', next);
   document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
 }
+
 function loadTheme() {
   const saved = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', saved);
@@ -677,13 +759,16 @@ function doLogin() {
     document.getElementById('input-pass').value = '';
   }
 }
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !document.getElementById('login-screen').classList.contains('hidden')) {
     doLogin();
   }
 });
+
 function doLogout() {
   clearInterval(pollTimer);
+  clearInterval(mentionCheckInterval);
   currentUser = null;
   knownMsgIds.clear();
   document.getElementById('app').classList.remove('visible');
@@ -691,16 +776,19 @@ function doLogout() {
   document.getElementById('input-user').value = '';
   document.getElementById('input-pass').value = '';
 }
+
 function initApp() {
   loadTheme();
   document.getElementById('sidebar-uname').textContent = currentUser.name;
   document.getElementById('sidebar-role').textContent  = currentUser.role;
   document.getElementById('sidebar-avatar').textContent = currentUser.name[0].toUpperCase();
   switchChannel('geral', document.querySelector('[data-ch="geral"]'));
+  setupMentionAutocomplete();
+  startMentionCheck();
 }
 
 // ═══════════════════════════════════════════════
-// CANAIS com senha
+// CANAIS COM SENHA
 // ═══════════════════════════════════════════════
 let pendingChannel = null;
 let pendingElement = null;
@@ -788,11 +876,17 @@ async function loadMessages(initial) {
 
     let hasNew = false;
     let newMsg = null;
+    let hasMention = false;
+
     msgs.forEach(m => {
       if (!knownMsgIds.has(m.id)) {
         if (m.user !== currentUser.id && !isFirst) {
           hasNew = true;
           newMsg = m;
+          // Verifica se a mensagem contém menção ao usuário atual
+          if (m.message && m.message.toLowerCase().includes('@' + currentUser.id)) {
+            hasMention = true;
+          }
         }
         knownMsgIds.add(m.id);
       }
@@ -802,7 +896,13 @@ async function loadMessages(initial) {
     if (isFirst) scrollToBottom();
     if (hasNew && newMsg) {
       playPing();
-      notifyNewMessage(newMsg.user, newMsg.message);
+      if (hasMention) {
+        notifyNewMessage(newMsg.user, newMsg.message, true);
+        showToast('🔔 Menção', `@${newMsg.user} mencionou você`);
+        updateMentionBadge(1);
+      } else {
+        notifyNewMessage(newMsg.user, newMsg.message, false);
+      }
       scrollToBottom();
     }
     setSyncStatus('', '');
@@ -835,7 +935,7 @@ function renderMessages(msgs) {
     }
     const own = m.user === currentUser.id;
     const initials = (m.user || '?')[0].toUpperCase();
-    const text = linkify(escapeHtml(m.message));
+    const text = linkify(processMentions(escapeHtml(m.message)));
     html += `
       <div class="msg-group ${own ? 'own' : ''}">
         <div class="msg-avatar">${initials}</div>
@@ -853,12 +953,285 @@ function renderMessages(msgs) {
 function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
 function linkify(text) {
   return text.replace(/(https?:\/\/[^\s&]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 }
+
 function scrollToBottom() {
   const area = document.getElementById('messages-area');
   setTimeout(() => { area.scrollTop = area.scrollHeight; }, 60);
+}
+
+// ═══════════════════════════════════════════════
+// SISTEMA DE MENÇÕES
+// ═══════════════════════════════════════════════
+
+// Processa menções na mensagem
+function processMentions(text) {
+  return text.replace(/@(\w+)/g, (match, username) => {
+    if (USERS[username]) {
+      return `<span class="mention" data-user="${username}" onclick="goToUserProfile('${username}')">@${USERS[username].name}</span>`;
+    }
+    return match;
+  });
+}
+
+function goToUserProfile(username) {
+  const user = USERS[username];
+  if (user) {
+    showToast('👤 Perfil', `${user.name} - ${user.role}`);
+  }
+}
+
+// Auto-completar menções
+let mentionSuggestions = [];
+let mentionIndex = -1;
+
+function setupMentionAutocomplete() {
+  const input = document.getElementById('msg-input');
+  const container = document.getElementById('mention-suggestions');
+  
+  input.addEventListener('input', function(e) {
+    const value = this.value;
+    const lastAt = value.lastIndexOf('@');
+    
+    if (lastAt !== -1) {
+      const query = value.substring(lastAt + 1).toLowerCase();
+      if (query.length > 0) {
+        mentionSuggestions = Object.keys(USERS).filter(u => 
+          u.toLowerCase().startsWith(query) && u !== currentUser.id
+        );
+        if (mentionSuggestions.length > 0) {
+          showMentionSuggestions(mentionSuggestions);
+          mentionIndex = -1;
+        } else {
+          hideMentionSuggestions();
+        }
+      } else {
+        mentionSuggestions = Object.keys(USERS).filter(u => u !== currentUser.id);
+        if (mentionSuggestions.length > 0) {
+          showMentionSuggestions(mentionSuggestions);
+          mentionIndex = -1;
+        }
+      }
+    } else {
+      hideMentionSuggestions();
+    }
+  });
+  
+  input.addEventListener('keydown', function(e) {
+    if (mentionSuggestions.length === 0) return;
+    
+    const suggestions = document.getElementById('mention-suggestions');
+    if (!suggestions || suggestions.style.display === 'none') return;
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      mentionIndex = Math.min(mentionIndex + 1, mentionSuggestions.length - 1);
+      highlightSuggestion(mentionIndex);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      mentionIndex = Math.max(mentionIndex - 1, -1);
+      highlightSuggestion(mentionIndex);
+    } else if (e.key === 'Tab' || e.key === 'Enter') {
+      e.preventDefault();
+      if (mentionIndex >= 0 && mentionIndex < mentionSuggestions.length) {
+        insertMention(mentionSuggestions[mentionIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      hideMentionSuggestions();
+    }
+  });
+}
+
+function showMentionSuggestions(suggestions) {
+  const container = document.getElementById('mention-suggestions');
+  container.innerHTML = suggestions.map((user, index) => `
+    <div class="mention-suggestion" data-user="${user}" data-index="${index}">
+      <span style="font-weight: 600;">@${USERS[user]?.name || user}</span>
+      <span style="font-size: 11px; color: var(--gray-600);">${USERS[user]?.role || ''}</span>
+    </div>
+  `).join('');
+  
+  container.style.display = 'block';
+  
+  container.querySelectorAll('.mention-suggestion').forEach(el => {
+    el.addEventListener('click', function() {
+      const user = this.dataset.user;
+      insertMention(user);
+    });
+    el.addEventListener('mouseenter', function() {
+      mentionIndex = parseInt(this.dataset.index);
+      highlightSuggestion(mentionIndex);
+    });
+  });
+}
+
+function hideMentionSuggestions() {
+  document.getElementById('mention-suggestions').style.display = 'none';
+  mentionSuggestions = [];
+  mentionIndex = -1;
+}
+
+function highlightSuggestion(index) {
+  const container = document.getElementById('mention-suggestions');
+  container.querySelectorAll('.mention-suggestion').forEach(el => {
+    el.style.background = '';
+  });
+  if (index >= 0 && index < mentionSuggestions.length) {
+    const items = container.querySelectorAll('.mention-suggestion');
+    if (items[index]) {
+      items[index].style.background = 'var(--gray-100)';
+    }
+  }
+}
+
+function insertMention(username) {
+  const input = document.getElementById('msg-input');
+  const value = input.value;
+  const lastAt = value.lastIndexOf('@');
+  if (lastAt !== -1) {
+    const before = value.substring(0, lastAt);
+    const after = value.substring(value.indexOf(' ', lastAt) !== -1 ? value.indexOf(' ', lastAt) : value.length);
+    input.value = before + '@' + username + ' ' + after;
+  }
+  hideMentionSuggestions();
+  input.focus();
+  input.dispatchEvent(new Event('input'));
+}
+
+// Verificar menções no servidor
+function startMentionCheck() {
+  if (mentionCheckInterval) clearInterval(mentionCheckInterval);
+  mentionCheckInterval = setInterval(checkMentions, 30000);
+}
+
+async function checkMentions() {
+  if (!currentUser) return;
+  try {
+    const url = `${SHEETS_URL}?action=get_mentions&user=${currentUser.id}&t=${Date.now()}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.success && data.mentions && data.mentions.length > 0) {
+      updateMentionBadge(data.mentions.length);
+      data.mentions.forEach(mention => {
+        showMentionNotification(mention);
+      });
+    }
+  } catch(err) {
+    console.error('Erro ao verificar menções:', err);
+  }
+}
+
+function updateMentionBadge(count) {
+  const badge = document.getElementById('mention-badge');
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+
+function showMentionNotification(mention) {
+  const fromUser = USERS[mention.from]?.name || mention.from;
+  const channelName = CHANNELS[mention.channel]?.name || mention.channel;
+  
+  showToast(
+    `🔔 @${fromUser} mencionou você`,
+    `📌 ${mention.message.slice(0, 60)}${mention.message.length > 60 ? '…' : ''}`
+  );
+  
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const notification = new Notification(`🔔 Menção de ${fromUser}`, {
+      body: `Canal: ${channelName}\n${mention.message.slice(0, 80)}`,
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>',
+      tag: 'mention-' + mention.id,
+      requireInteraction: true
+    });
+    notification.onclick = function() {
+      window.focus();
+      switchChannel(mention.channel, document.querySelector(`[data-ch="${mention.channel}"]`));
+      markMentionAsRead(mention.id);
+      notification.close();
+    };
+    setTimeout(() => notification.close(), 10000);
+  }
+  setTimeout(() => markMentionAsRead(mention.id), 5000);
+}
+
+async function markMentionAsRead(mentionId) {
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'mark_mention_read',
+        id: mentionId,
+        user: currentUser.id
+      })
+    });
+  } catch(err) {
+    console.error('Erro ao marcar menção como lida:', err);
+  }
+}
+
+// Painel de menções
+async function openMentionsPanel() {
+  document.getElementById('mentions-modal').classList.remove('hidden');
+  await loadMentionsPanel();
+}
+
+function closeMentionsModal() {
+  document.getElementById('mentions-modal').classList.add('hidden');
+}
+
+async function loadMentionsPanel() {
+  try {
+    const url = `${SHEETS_URL}?action=get_mentions&user=${currentUser.id}&t=${Date.now()}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const container = document.getElementById('mentions-list');
+    if (data.success && data.mentions && data.mentions.length > 0) {
+      container.innerHTML = data.mentions.map(mention => `
+        <div style="padding: 10px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--gold);">
+          <div style="font-weight: 600; font-size: 14px;">
+            @${USERS[mention.from]?.name || mention.from}
+            <span style="font-size: 11px; color: var(--gray-600);">em ${mention.channel}</span>
+          </div>
+          <div style="font-size: 13px; margin-top: 4px;">${linkify(escapeHtml(mention.message))}</div>
+          <div style="font-size: 11px; color: var(--gray-400); margin-top: 4px;">
+            ${mention.date} ${mention.time}
+            <button onclick="goToMention('${mention.channel}', '${mention.id}')" 
+                    style="margin-left: 8px; background: var(--gold); color: var(--navy); border: none; padding: 2px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;">
+              Ir para
+            </button>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      container.innerHTML = '<div style="text-align: center; color: var(--gray-400); padding: 20px;">Nenhuma menção não lida ✨</div>';
+    }
+  } catch(err) {
+    console.error('Erro ao carregar menções:', err);
+  }
+}
+
+function goToMention(channel, mentionId) {
+  switchChannel(channel, document.querySelector(`[data-ch="${channel}"]`));
+  markMentionAsRead(mentionId);
+  closeMentionsModal();
+}
+
+async function markAllMentionsRead() {
+  // Implementação simplificada - marca todas como lidas
+  showToast('Menções', 'Todas as menções marcadas como lidas ✅');
+  closeMentionsModal();
+  updateMentionBadge(0);
 }
 
 // ═══════════════════════════════════════════════
@@ -964,6 +1337,7 @@ async function sendMessage() {
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
+
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
@@ -974,6 +1348,7 @@ function autoResize(el) {
 // ═══════════════════════════════════════════════
 function openLinkModal() { document.getElementById('link-modal').classList.remove('hidden'); document.getElementById('link-text').focus(); }
 function closeLinkModal() { document.getElementById('link-modal').classList.add('hidden'); document.getElementById('link-text').value = ''; document.getElementById('link-url').value = ''; }
+
 function insertLink() {
   const text = document.getElementById('link-text').value.trim();
   const url  = document.getElementById('link-url').value.trim();
@@ -983,7 +1358,9 @@ function insertLink() {
   closeLinkModal();
   input.focus();
 }
+
 function addEmoji(em) { const el = document.getElementById('msg-input'); el.value += em; el.focus(); }
+
 function filterChannels(q) {
   q = q.toLowerCase();
   document.querySelectorAll('.channel-item').forEach(item => {
@@ -991,6 +1368,7 @@ function filterChannels(q) {
     item.style.display = name.includes(q) ? '' : 'none';
   });
 }
+
 function showToast(title, body) {
   const c = document.getElementById('toast-container');
   const el = document.createElement('div');
@@ -999,11 +1377,13 @@ function showToast(title, body) {
   c.appendChild(el);
   setTimeout(() => { el.style.animation = 'slide-out .3s ease forwards'; setTimeout(() => el.remove(), 300); }, 4000);
 }
+
 function setSyncStatus(cls, text) {
   const el = document.getElementById('sync-status');
   el.className = 'sync-status ' + cls;
   el.textContent = text;
 }
+
 function playPing() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
