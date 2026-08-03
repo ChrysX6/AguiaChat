@@ -662,12 +662,9 @@ const USERS = {
   marcia:   { pass: 'Aguia2025@', name: 'Marcia', role: 'Contadora' },
 };
 
-const CHANNEL_PASSWORDS = {
-  dp:         'dp@2025',
-  fiscal:     'fiscal@2025',
-  societario:'societario@2025',
-  contabil: 'contabil@2025',
-};
+// As senhas dos canais NÃO ficam mais aqui — ficam só no servidor (Apps Script).
+// Sabemos quais canais são protegidos apenas pela lista abaixo (nomes, não senhas).
+const PROTECTED_CHANNELS = ['dp', 'fiscal', 'societario', 'contabil'];
 
 const CHANNELS = {
   geral:         { name: 'Geral',            icon: '💬', meta: 'Canal principal da equipe' },
@@ -823,12 +820,21 @@ function initApp() {
 }
 
 function markUnlockedChannelsInSidebar() {
-  Object.keys(CHANNEL_PASSWORDS).forEach(ch => {
-    if (localStorage.getItem('unlocked_' + ch) === 'true') {
+  PROTECTED_CHANNELS.forEach(ch => {
+    if (getChannelToken(ch)) {
       const el = document.querySelector(`[data-ch="${ch}"]`);
       if (el) el.classList.remove('locked');
     }
   });
+}
+
+// O token substitui a senha: é o que fica salvo no dispositivo e é
+// enviado ao servidor para provar que o usuário já digitou a senha certa.
+function getChannelToken(ch) {
+  return localStorage.getItem('chtoken_' + ch);
+}
+function setChannelToken(ch, token) {
+  localStorage.setItem('chtoken_' + ch, token);
 }
 
 // ═══════════════════════════════════════════════
@@ -846,7 +852,7 @@ function switchChannel(ch, el) {
     enterChannel(ch, el);
     return;
   }
-  if (localStorage.getItem('unlocked_' + ch) === 'true') {
+  if (getChannelToken(ch)) {
     enterChannel(ch, el);
     return;
   }
@@ -863,18 +869,36 @@ function closePassModal() {
   pendingElement = null;
 }
 
-function checkChannelPassword() {
+async function checkChannelPassword() {
   const pass = document.getElementById('channel-pass').value.trim();
   const ch = pendingChannel;
-  if (CHANNEL_PASSWORDS[ch] && CHANNEL_PASSWORDS[ch] === pass) {
-    localStorage.setItem('unlocked_' + ch, 'true');
-    if (pendingElement) pendingElement.classList.remove('locked');
-    closePassModal();
-    enterChannel(ch, pendingElement);
-  } else {
-    alert('Senha incorreta!');
-    document.getElementById('channel-pass').value = '';
-    document.getElementById('channel-pass').focus();
+  const el = pendingElement;
+  const confirmBtn = document.querySelector('#pass-modal .btn-confirm');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Verificando...';
+  try {
+    // A senha só é validada no servidor agora — nunca comparada aqui no cliente.
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: POST_HEADERS,
+      body: JSON.stringify({ action: 'verify_channel_password', channel: ch, password: pass }),
+    });
+    const data = await res.json();
+    if (data.success && data.token) {
+      setChannelToken(ch, data.token);
+      if (el) el.classList.remove('locked');
+      closePassModal();
+      enterChannel(ch, el);
+    } else {
+      alert('Senha incorreta!');
+      document.getElementById('channel-pass').value = '';
+      document.getElementById('channel-pass').focus();
+    }
+  } catch (err) {
+    alert('Não foi possível verificar a senha. Verifique sua conexão.');
+  } finally {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Entrar';
   }
 }
 
@@ -911,7 +935,8 @@ function enterChannel(ch, el) {
 async function loadMessages(initial) {
   setSyncStatus('syncing', '↻ sincronizando');
   try {
-    const url = `${SHEETS_URL}?action=get_messages&channel=${currentChannel}&limit=100&t=${Date.now()}`;
+    const token = getChannelToken(currentChannel) || '';
+    const url = `${SHEETS_URL}?action=get_messages&channel=${currentChannel}&limit=100&token=${encodeURIComponent(token)}&t=${Date.now()}`;
     const res  = await fetch(url);
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Erro ao buscar mensagens');
@@ -1317,7 +1342,8 @@ async function sendTypingStatus(active) {
         action: 'set_typing',
         user: currentUser.id,
         channel: currentChannel,
-        active: active
+        active: active,
+        token: getChannelToken(currentChannel) || ''
       })
     });
   } catch(e) {}
@@ -1325,7 +1351,8 @@ async function sendTypingStatus(active) {
 
 async function fetchTypingStatus() {
   try {
-    const url = `${SHEETS_URL}?action=get_typing&channel=${currentChannel}&t=${Date.now()}`;
+    const token = getChannelToken(currentChannel) || '';
+    const url = `${SHEETS_URL}?action=get_typing&channel=${currentChannel}&token=${encodeURIComponent(token)}&t=${Date.now()}`;
     const res = await fetch(url);
     const data = await res.json();
     if (data.success && data.typing) {
@@ -1367,7 +1394,7 @@ async function sendMessage() {
   input.focus();
 
   try {
-    const body = { action: 'save_message', channel: currentChannel, user: currentUser.id, message: text, type: 'texto' };
+    const body = { action: 'save_message', channel: currentChannel, user: currentUser.id, message: text, type: 'texto', token: getChannelToken(currentChannel) || '' };
     await fetch(SHEETS_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -1399,7 +1426,7 @@ async function retryPending(tempId) {
   p.failed = false;
   renderMessages(lastKnownMsgsSnapshot());
   try {
-    const body = { action: 'save_message', channel: currentChannel, user: p.user, message: p.message, type: 'texto' };
+    const body = { action: 'save_message', channel: currentChannel, user: p.user, message: p.message, type: 'texto', token: getChannelToken(currentChannel) || '' };
     await fetch(SHEETS_URL, {
       method: 'POST',
       mode: 'no-cors',
