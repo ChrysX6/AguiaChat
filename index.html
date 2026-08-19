@@ -935,6 +935,7 @@ function enterChannel(ch, el) {
   channelUnlocked = true;
   knownMsgIds.clear();
   pendingMessages = [];
+  _lastMsgsCache = []; // evita vazar cache de mensagens do canal anterior para o novo
 
   document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
   if (el) el.classList.add('active');
@@ -960,13 +961,21 @@ function enterChannel(ch, el) {
 // CARREGAR MENSAGENS
 // ═══════════════════════════════════════════════
 async function loadMessages(initial) {
+  // Trava o canal-alvo desta chamada específica. Se o usuário trocar de canal
+  // enquanto esta requisição ainda está no ar, a resposta é descartada lá embaixo
+  // em vez de "vazar" mensagens de um canal para outro (era a causa do bug do
+  // Societário mostrando conversas do Fiscal).
+  const requestChannel = currentChannel;
   setSyncStatus('syncing', '↻ sincronizando');
   try {
-    const token = getChannelToken(currentChannel) || '';
-    const url = `${SHEETS_URL}?action=get_messages&channel=${currentChannel}&limit=100&token=${encodeURIComponent(token)}&t=${Date.now()}`;
+    const token = getChannelToken(requestChannel) || '';
+    const url = `${SHEETS_URL}?action=get_messages&channel=${requestChannel}&limit=100&token=${encodeURIComponent(token)}&t=${Date.now()}`;
     const res  = await fetch(url);
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Erro ao buscar mensagens');
+
+    // A resposta chegou depois que o usuário já trocou de canal: descarta.
+    if (requestChannel !== currentChannel) return;
 
     const msgs = data.messages || [];
     const isFirst = initial || knownMsgIds.size === 0;
@@ -1006,6 +1015,7 @@ async function loadMessages(initial) {
     }
     setSyncStatus('', '');
   } catch(err) {
+    if (requestChannel !== currentChannel) return; // trocou de canal durante o erro também
     setSyncStatus('error', '⚠ sem conexão');
     if (initial) {
       document.getElementById('messages-area').innerHTML =
@@ -1449,11 +1459,17 @@ async function sendTypingStatus(active) {
 }
 
 async function fetchTypingStatus() {
+  // Mesmo raciocínio de loadMessages(): trava o canal-alvo e descarta a
+  // resposta se o usuário já tiver trocado de canal nesse meio tempo.
+  const requestChannel = currentChannel;
   try {
-    const token = getChannelToken(currentChannel) || '';
-    const url = `${SHEETS_URL}?action=get_typing&channel=${currentChannel}&token=${encodeURIComponent(token)}&t=${Date.now()}`;
+    const token = getChannelToken(requestChannel) || '';
+    const url = `${SHEETS_URL}?action=get_typing&channel=${requestChannel}&token=${encodeURIComponent(token)}&t=${Date.now()}`;
     const res = await fetch(url);
     const data = await res.json();
+
+    if (requestChannel !== currentChannel) return;
+
     if (data.success && data.typing) {
       const typingUsers = data.typing.filter(u => u !== currentUser.id);
       const indicator = document.getElementById('typing-indicator');
